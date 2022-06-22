@@ -1,4 +1,3 @@
-# Initial imports
 import itertools
 import pandas as pd
 import numpy as np
@@ -94,15 +93,30 @@ def plot_confusion_matrix(cm, classes,
 
 
 def main():
-    # Load iris data and store in dataframe
-    iris = datasets.load_iris()
-    df = pd.DataFrame(data=iris.data, columns=iris.feature_names)
-    df['target'] = iris.target
-    df.head()
+    #Dataset
+    input_file = '0-Datasets/risk_factors_cervical_cancer_clear.csv'
+    names = ['Age','Number of sexual partners','First sexual intercourse','Num of pregnancies','Smokes','Smokes (years)','Smokes (packs/year)','Hormonal Contraceptives','Hormonal Contraceptives (years)','IUD','IUD (years)',
+         'STDs','STDs (number)','STDs:condylomatosis','STDs:cervical condylomatosis','STDs:vaginal condylomatosis','STDs:vulvo-perineal condylomatosis','STDs:syphilis','STDs:pelvic inflammatory disease',
+         'STDs:genital herpes','STDs:molluscum contagiosum','STDs:AIDS','STDs:HIV','STDs:Hepatitis B','STDs:HPV','STDs: Number of diagnosis','Dx:Cancer',
+         'Dx:CIN','Dx:HPV','Dx','Hinselmann','Schiller','Citology','Biopsy'] 
+    features = ['Age','Number of sexual partners','First sexual intercourse','Num of pregnancies','Smokes','Smokes (years)','Smokes (packs/year)','Hormonal Contraceptives','Hormonal Contraceptives (years)','IUD','IUD (years)',
+         'STDs','STDs (number)','STDs:condylomatosis','STDs:cervical condylomatosis','STDs:vaginal condylomatosis','STDs:vulvo-perineal condylomatosis','STDs:syphilis','STDs:pelvic inflammatory disease',
+         'STDs:genital herpes','STDs:molluscum contagiosum','STDs:AIDS','STDs:HIV','STDs:Hepatitis B','STDs:HPV','STDs: Number of diagnosis','Dx:Cancer',
+         'Dx:CIN','Dx:HPV','Dx','Hinselmann','Schiller','Citology']
+    target = 'Biopsy'
+    df = pd.read_csv(input_file,    # Nome do arquivo com dados
+                     names = names)
+
+    #Load dataset
+    data = df[features]
+    target = df['Biopsy']
+    labels = ['True label', 'Predective label']
+
+    data.head()
 
     # Separate X and y data
-    X = df.drop('target', axis=1)
-    y = df.target   
+    X = data
+    y = target   
     print("Total samples: {}".format(X.shape[0]))
 
     # Split the data - 75% train, 25% test
@@ -126,9 +140,10 @@ def main():
     print("F1 Score K-NN from scratch: {:.2f}%".format(f1))
 
     # Get test confusion matrix
-    cm = confusion_matrix(y_test, y_hat_test)        
-    plot_confusion_matrix(cm, iris.target_names, False, "Confusion Matrix - K-NN")      
-    plot_confusion_matrix(cm, iris.target_names, True, "Confusion Matrix - K-NN normalized")  
+    cm = confusion_matrix(y_test, y_hat_test)
+    print(cm)        
+    plot_confusion_matrix(cm, labels, False, "Confusion Matrix - K-NN")      
+    plot_confusion_matrix(cm, labels, True, "Confusion Matrix - K-NN normalized")  
 
     # STEP 2 - TESTS USING knn classifier from sk-learn
     knn = KNeighborsClassifier(n_neighbors=5)
@@ -143,8 +158,8 @@ def main():
 
     # Get test confusion matrix    
     cm = confusion_matrix(y_test, y_hat_test)        
-    plot_confusion_matrix(cm, iris.target_names, False, "Confusion Matrix - K-NN sklearn")      
-    plot_confusion_matrix(cm, iris.target_names, True, "Confusion Matrix - K-NN sklearn normalized" )  
+    plot_confusion_matrix(cm, labels, False, "Confusion Matrix - K-NN sklearn")      
+    plot_confusion_matrix(cm, labels, True, "Confusion Matrix - K-NN sklearn normalized" )  
     plt.show()
 
 
