@@ -46,7 +46,7 @@ def plot_confusion_matrix(cm, classes,
     plt.ylabel('True label')
     plt.xlabel('Predicted label')    
 
-def load_dataset(dataset='cancer'):        
+""" def load_dataset(dataset='cancer'):        
     if dataset == 'iris':
         # Load iris data and store in dataframe
         iris = datasets.load_iris()
@@ -61,16 +61,35 @@ def load_dataset(dataset='cancer'):
         df['target'] = cancer.target
     
     print(df.head())
-    return names, df
+    return names, df """
 
 
 def main():
-    #load dataset
-    target_names, df = load_dataset('iris')
+    
+    # Faz a leitura do arquivo
+    input_file = '0-Datasets/risk_factors_cervical_cancer_clear.csv'
+    names = ['Age','Number of sexual partners','First sexual intercourse','Num of pregnancies','Smokes','Smokes (years)','Smokes (packs/year)','Hormonal Contraceptives','Hormonal Contraceptives (years)','IUD','IUD (years)',
+         'STDs','STDs (number)','STDs:condylomatosis','STDs:cervical condylomatosis','STDs:vaginal condylomatosis','STDs:vulvo-perineal condylomatosis','STDs:syphilis','STDs:pelvic inflammatory disease',
+         'STDs:genital herpes','STDs:molluscum contagiosum','STDs:AIDS','STDs:HIV','STDs:Hepatitis B','STDs:HPV','STDs: Number of diagnosis','Dx:Cancer',
+         'Dx:CIN','Dx:HPV','Dx','Hinselmann','Schiller','Citology','Biopsy'] 
+    features = ['Age','Number of sexual partners','First sexual intercourse','Num of pregnancies','Smokes','Smokes (years)','Smokes (packs/year)','Hormonal Contraceptives','Hormonal Contraceptives (years)','IUD','IUD (years)',
+         'STDs','STDs (number)','STDs:condylomatosis','STDs:cervical condylomatosis','STDs:vaginal condylomatosis','STDs:vulvo-perineal condylomatosis','STDs:syphilis','STDs:pelvic inflammatory disease',
+         'STDs:genital herpes','STDs:molluscum contagiosum','STDs:AIDS','STDs:HIV','STDs:Hepatitis B','STDs:HPV','STDs: Number of diagnosis','Dx:Cancer',
+         'Dx:CIN','Dx:HPV','Dx','Hinselmann','Schiller','Citology']
+    target = 'Biopsy'
+    
+    df = pd.read_csv(input_file,    # Nome do arquivo com dados
+                     names = names) # Nome das colunas                      
+    #ShowInformationDataFrame(df,"Dataframe original")  
+    
+    """ #load dataset
+    target_names, df = load_dataset('iris') """
 
     # Separate X and y data
-    X = df.drop('target', axis=1)
-    y = df.target   
+    X = df.loc[:, features]    
+    y = df.loc[:,target]
+    print(X.head())
+    
     print("Total samples: {}".format(X.shape[0]))
 
     # Split the data - 75% train, 25% test
@@ -105,8 +124,8 @@ def main():
 
     # Get test confusion matrix    
     cm = confusion_matrix(y_test, y_hat_test)        
-    plot_confusion_matrix(cm, target_names, False, "Confusion Matrix - SVM sklearn")      
-    plot_confusion_matrix(cm, target_names, True, "Confusion Matrix - SVM sklearn normalized" )  
+    plot_confusion_matrix(cm, target, False, "Confusion Matrix - SVM sklearn")      
+    plot_confusion_matrix(cm, target, True, "Confusion Matrix - SVM sklearn normalized" )  
     plt.show()
 
 
