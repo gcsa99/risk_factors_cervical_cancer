@@ -1,8 +1,9 @@
 #Implementation of Kmeans from scratch and using sklearn
 #Loading the required modules 
 import numpy as np
-from scipy.spatial.distance import cdist 
-from sklearn.datasets import load_digits
+from scipy.spatial.distance import cdist
+import pandas as pd 
+#from sklearn.datasets import load_digits
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
@@ -62,28 +63,47 @@ def plot_samples(projected, labels, title):
     plt.legend()
     plt.title(title)
 
+def ShowInformationDataFrame(df, message=""):
+    print(message+"\n")
+    print(df.info())
+    print(df.describe())
+    print(df.head(10))
+    print("\n")
  
+
 def main():
-    #Load dataset Digits
-    digits = load_digits()
-    show_digitsdataset(digits)
+    #Database
+    input_file = '0-Datasets/risk_factors_cervical_cancer_clear.csv'
+    names = ['Age','Number of sexual partners','First sexual intercourse','Num of pregnancies','Smokes','Smokes (years)','Smokes (packs/year)','Hormonal Contraceptives','Hormonal Contraceptives (years)','IUD','IUD (years)',
+         'STDs','STDs (number)','STDs:condylomatosis','STDs:cervical condylomatosis','STDs:vaginal condylomatosis','STDs:vulvo-perineal condylomatosis','STDs:syphilis','STDs:pelvic inflammatory disease',
+         'STDs:genital herpes','STDs:molluscum contagiosum','STDs:AIDS','STDs:HIV','STDs:Hepatitis B','STDs:HPV','STDs: Number of diagnosis','Dx:Cancer',
+         'Dx:CIN','Dx:HPV','Dx','Hinselmann','Schiller','Citology','Biopsy'] 
+    features = ['Age','Number of sexual partners','First sexual intercourse','Num of pregnancies','Smokes','Smokes (years)','Smokes (packs/year)','Hormonal Contraceptives','Hormonal Contraceptives (years)','IUD','IUD (years)',
+         'STDs','STDs (number)','STDs:condylomatosis','STDs:cervical condylomatosis','STDs:vaginal condylomatosis','STDs:vulvo-perineal condylomatosis','STDs:syphilis','STDs:pelvic inflammatory disease',
+         'STDs:genital herpes','STDs:molluscum contagiosum','STDs:AIDS','STDs:HIV','STDs:Hepatitis B','STDs:HPV','STDs: Number of diagnosis','Dx:Cancer',
+         'Dx:CIN','Dx:HPV','Dx','Hinselmann','Schiller','Citology']
+    target = 'Biopsy'
     
+    df = pd.read_csv(input_file,    # Nome do arquivo com dados
+                     names = names) # Nome das colunas                      
+    ShowInformationDataFrame(df,"Dataframe original")
+
     #Transform the data using PCA
     pca = PCA(2)
-    projected = pca.fit_transform(digits.data)
+    projected = pca.fit_transform(df)
     print(pca.explained_variance_ratio_)
-    print(digits.data.shape)
+    print(df.shape)
     print(projected.shape)    
-    plot_samples(projected, digits.target, 'Original Labels')
+    plot_samples(projected, target, 'Original Labels')
  
     #Applying our kmeans function from scratch
-    labels = KMeans_scratch(projected,6,5)
+    labels = KMeans_scratch(projected,2,1)
     
     #Visualize the results 
     plot_samples(projected, labels, 'Clusters Labels KMeans from scratch')
 
     #Applying sklearn kemans function
-    kmeans = KMeans(n_clusters=6).fit(projected)
+    kmeans = KMeans(n_clusters=2).fit(projected)
     print(kmeans.inertia_)
     centers = kmeans.cluster_centers_
     score = silhouette_score(projected, kmeans.labels_)    
